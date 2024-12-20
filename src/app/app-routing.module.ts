@@ -1,21 +1,32 @@
-// angular import
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-// Project import
+// Project imports
 import { AdminComponent } from './theme/layouts/admin-layout/admin-layout.component';
 import { GuestComponent } from './theme/layouts/guest/guest.component';
+import { AuthGuard } from './auth.guard'; // Asegúrate de importar el guard
 
 const routes: Routes = [
   {
-    path: '',
-    component: AdminComponent,
+    path: '',  // Ruta por defecto
+    redirectTo: '/login',  // Redirige a la página de login
+    pathMatch: 'full'  // Asegura que redirija solo si no hay otras rutas
+  },
+  {
+    path: 'login',
+    component: GuestComponent,  // Página de login
     children: [
       {
         path: '',
-        redirectTo: '/dashboard/default',
-        pathMatch: 'full'
-      },
+        loadComponent: () => import('./demo/authentication/login/login.component')
+      }
+    ]
+  },
+  {
+    path: '',
+    component: AdminComponent,
+    canActivate: [AuthGuard],  // Protege las rutas bajo Admin
+    children: [
       {
         path: 'dashboard/default',
         loadComponent: () => import('./demo/default/dashboard/dashboard.component').then((c) => c.DefaultComponent)
@@ -35,18 +46,8 @@ const routes: Routes = [
     ]
   },
   {
-    path: '',
-    component: GuestComponent,
-    children: [
-      {
-        path: 'login',
-        loadComponent: () => import('./demo/authentication/login/login.component')
-      },
-      {
-        path: 'register',
-        loadComponent: () => import('./demo/authentication/register/register.component')
-      }
-    ]
+    path: '**', // Redirige cualquier ruta no encontrada al login
+    redirectTo: '/login'
   }
 ];
 
