@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 
 // Project imports
 import { AdminComponent } from './theme/layouts/admin-layout/admin-layout.component';
-import { GuestComponent } from './theme/layouts/guest/guest.component';
-import { AuthGuard } from './auth.guard'; // Asegúrate de importar el guard
+import { AuthGuard } from './guards/auth.guard'; // Asegúrate de importar el guard
+import { LoginComponent } from './demo/authentication/login/login.component'; // Asegúrate de importar el LoginComponent
 
 const routes: Routes = [
   {
@@ -14,13 +14,7 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: GuestComponent,  // Página de login
-    children: [
-      {
-        path: '',
-        loadComponent: () => import('./demo/authentication/login/login.component')
-      }
-    ]
+    component: LoginComponent,  // Página de login directamente
   },
   {
     path: '',
@@ -49,6 +43,7 @@ const routes: Routes = [
     path: '**', // Redirige cualquier ruta no encontrada al login
     redirectTo: '/login'
   }
+
 ];
 
 @NgModule({

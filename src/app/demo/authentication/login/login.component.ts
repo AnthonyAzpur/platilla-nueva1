@@ -1,28 +1,40 @@
-// angular import
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from 'src/app/demo/authentication/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, FormsModule], // Usamos FormsModule para ngModel
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export default class LoginComponent {
-  // public method
-  SignInOptions = [
-    {
-      image: 'assets/images/authentication/google.svg',
-      name: 'Google'
-    },
-    {
-      image: 'assets/images/authentication/twitter.svg',
-      name: 'Twitter'
-    },
-    {
-      image: 'assets/images/authentication/facebook.svg',
-      name: 'Facebook'
-    }
-  ];
+export class LoginComponent {
+
+  username: string = '';
+  password: string = '';
+  errorMessage: string = '';
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  onLogin(): void {
+    const appId = 7; // Tu valor de app_id fijo
+
+    this.authService.login(this.username, this.password, appId).subscribe({
+      next: (response) => {
+        if (response.error === 0) {
+          // Si la respuesta es exitosa, redirige al dashboard
+          this.router.navigate(['/dashboard/default']);
+        } else {
+          // Si la respuesta tiene error, muestra el mensaje de error
+          this.errorMessage = response.mensa;
+        }
+      },
+      error: (err) => {
+        // Maneja errores en la solicitud HTTP (por ejemplo, problemas de red)
+        this.errorMessage = 'Hubo un error en la autenticación';
+      }
+    });
+  }
 }

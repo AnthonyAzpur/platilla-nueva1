@@ -70,9 +70,15 @@ export class NavContentComponent implements OnInit {
   // Life cycle events
   ngOnInit() {
     if (this.windowWidth < 1025) {
-      (document.querySelector('.coded-navbar') as HTMLDivElement).classList.add('menupos-static');
+      const navbarElement = document.querySelector('.coded-navbar') as HTMLDivElement;
+      if (navbarElement) { // Asegúrate de que el elemento exista
+        navbarElement.classList.add('menupos-static');
+      } else {
+        console.error('Elemento .coded-navbar no encontrado');
+      }
     }
   }
+
 
   fireOutClick() {
     let current_url = this.location.path();
